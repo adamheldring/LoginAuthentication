@@ -3,6 +3,7 @@ import express from "express"
 import bodyParser from "body-parser"
 import cors from "cors"
 import bcrypt from "bcrypt-nodejs"
+import uuid from "uuid/v4"
 
 // Express setup, including JSON body parsing.
 const app = express()
@@ -25,9 +26,23 @@ mongoose.connection.once("open", () => console.log("Connected to mongodb"))
 
 // Define a model here.
 const User = mongoose.model("User", {
-  username: String,
-  email: String,
-  password: String
+  username: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  accesstoken: {
+    type: String,
+    default: () => uuid()
+  }
 })
 
 // Example root endpoint to get started with
@@ -49,6 +64,7 @@ app.get("/users/", (req, res) => {
   })
 })
 
+// REGISTER New user
 app.post("/users/", (req, res) => {
   const encryptedPass = bcrypt.hashSync(req.body.password)
   const newUser = new User({
@@ -66,6 +82,45 @@ app.post("/users/", (req, res) => {
     })
 })
 
+// LOGIN User
+app.post("/sessions/", (req, res) => {
+  User.findOne({ username: req.body.username })
+    .then(user => {
+      if (user && bcrypt.compareSync(req.body.password, user.password)) {
+        res.json({
+          accesstoken: user.accesstoken,
+          userId: user.id,
+          message: "Sucessfully logged in"
+        })
+      } else {
+        res.json({ notFound: true })
+      }
+    })
+    .catch(err => {
+      res.json(err)
+    })
+})
 
+// Middleware
+const authenticateUser = (req, res, next) => {
+  User.findById(req.params.id)
+    .then(user => {
+      if (user.accesstoken === req.headers.accesstoken) {
+        next()
+      } else {
+        // User is not logged in
+        res.status(401).json({ loggedOut: true })
+      }
+      console.log(req.headers.accesstoken)
+      res.send(req.headers.accesstoken)
+    })
+}
+
+// app.use calls for middleware and runs authenticateUsers first
+app.use("/users/:id/movies", authenticateUser)
+app.get("/users/:id/movies", (req, res) => {
+  console.log("Authorized!")
+  res.json({ userStuff: [] })
+})
 
 app.listen(8080, () => console.log("Products API listening on port 8080!"))
