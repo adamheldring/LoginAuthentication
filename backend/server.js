@@ -39,6 +39,10 @@ const User = mongoose.model("User", {
     type: String,
     required: true
   },
+  favorite: {
+    type: String,
+    required: true
+  },
   accesstoken: {
     type: String,
     default: () => uuid()
@@ -70,7 +74,8 @@ app.post("/users/", (req, res) => {
   const newUser = new User({
     username: req.body.username,
     email: req.body.email,
-    password: encryptedPass
+    password: encryptedPass,
+    favorite: req.body.favorite
   })
   console.log(newUser)
   newUser.save()
@@ -91,6 +96,7 @@ app.post("/sessions/", (req, res) => {
           accesstoken: user.accesstoken,
           userId: user.id,
           username: user.username,
+          favorite: user.favorite,
           message: "Sucessfully logged in"
         })
       } else {

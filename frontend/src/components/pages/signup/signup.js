@@ -6,7 +6,8 @@ state = {
   username: "",
   email: "",
   password: "",
-  registeredName: ""
+  favorite: "",
+  registered: false
 }
 
 handleChange = (e) => {
@@ -23,7 +24,7 @@ clearFields = () => {
     username: "",
     email: "",
     password: "",
-    registered: false
+    favorite: ""
   })
 }
 
@@ -37,7 +38,8 @@ regNewUser = (e) => {
   const newUser = {
     username: this.state.username,
     email: this.state.email,
-    password: this.state.password
+    password: this.state.password,
+    favorite: this.state.favorite
   }
   console.log(newUser)
   console.log(JSON.stringify(newUser))
@@ -69,6 +71,7 @@ regNewUser = (e) => {
           <input type="text" name="username" value={this.state.username} placeholder="Username" onChange={this.handleChange} required></input>
           <input type="email" name="email" value={this.state.email} placeholder="E-mail" onChange={this.handleChange} required></input>
           <input type="password" name="password" value={this.state.password} placeholder="Password" onChange={this.handleChange} required></input>
+          <input type="favorite" name="favorite" value={this.state.favorite} placeholder="Favorite movie" onChange={this.handleChange} required></input>
           <button type="submit">Register</button>
           {(this.state.registered) && <h4>You are registered!</h4>}
         </form>

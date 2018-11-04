@@ -40,6 +40,7 @@ loginUser = (e) => {
       sessionStorage.setItem("usertoken", userData.accesstoken)
       sessionStorage.setItem("userId", userData.userId)
       sessionStorage.setItem("username", userData.username)
+      sessionStorage.setItem("favorite", userData.favorite)
       this.getUserData()
     })
     .catch((err) => {
@@ -61,6 +62,15 @@ getUserData = () => {
     })
 }
 
+logout = () => {
+  console.log("Logging out...")
+  sessionStorage.removeItem("usertoken")
+  sessionStorage.removeItem("userId")
+  sessionStorage.removeItem("username")
+  sessionStorage.removeItem("favorite")
+  this.setState({ loggedin: false })
+}
+
 componentDidMount() {
   this.getUserData()
 }
@@ -71,7 +81,9 @@ componentDidMount() {
         {this.state.loggedin ?
           <div className="myPageView">
             <h1>WELCOME {sessionStorage.getItem("username").toUpperCase()}</h1>
-            <h3>Your favorite movies:</h3>
+            <p>Your favorite movie is:</p>
+            <h4>{sessionStorage.getItem("favorite")}</h4>
+            <button onClick={this.logout}>Log out</button>
           </div>
           :
           <div className="formContainer formContainer--signin">
