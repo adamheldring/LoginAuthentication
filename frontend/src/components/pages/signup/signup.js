@@ -22,7 +22,8 @@ clearFields = () => {
   this.setState({
     username: "",
     email: "",
-    password: ""
+    password: "",
+    registered: false
   })
 }
 
@@ -50,6 +51,7 @@ regNewUser = (e) => {
     body: JSON.stringify(newUser)
   }).then((data) => {
       console.log("Request success: ", data)
+      this.setState({ registered: true })
     })
     .catch((err) => {
       console.log("Reqeust failure: ", err)
@@ -68,6 +70,7 @@ regNewUser = (e) => {
           <input type="email" name="email" value={this.state.email} placeholder="E-mail" onChange={this.handleChange} required></input>
           <input type="password" name="password" value={this.state.password} placeholder="Password" onChange={this.handleChange} required></input>
           <button type="submit">Register</button>
+          {(this.state.registered) && <h4>You are registered!</h4>}
         </form>
       </section>
     )

@@ -10,7 +10,7 @@ class Header extends React.Component {
           <p>Signup</p>
         </Link>
         <Link to="/" className="header__menuItem">
-          <p>Login</p>
+          <p>My Page</p>
         </Link>
       </div>
     )

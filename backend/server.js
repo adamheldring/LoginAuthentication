@@ -90,6 +90,7 @@ app.post("/sessions/", (req, res) => {
         res.json({
           accesstoken: user.accesstoken,
           userId: user.id,
+          username: user.username,
           message: "Sucessfully logged in"
         })
       } else {
